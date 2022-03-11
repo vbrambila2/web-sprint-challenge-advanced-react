@@ -1,23 +1,47 @@
-import React, { cloneElement, useState } from 'react'
-
-const initialState = {
-  x: 2,
-  y: 2
-}
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
 
 const initialCount = 0;
+
+const initialState = {
+  "x": 2,
+  "y": 2,
+  "steps": 0,
+  "email": "lady@gmail.com"
+}
 
 export default function AppFunctional(props) {
   const [grid, setGrid] = useState(initialState)
   const [count, setCount] = useState(initialCount);
+
+  const url = 'http://localhost:9000/api/result'; 
+
+  const postInfo = () => {
+    axios.post(url, grid)
+      .then(res => {
+        console.log(res, "res");
+      })
+      .catch(err => console.error(err))
+  }
+
+  useEffect(() => {
+    postInfo();
+  }, []);
+
   
   const letter = 'B';
 
   const leftBtn = () => {
     const increase = count + 1;
     setCount(increase);
+
     const move = grid.x - 1;
-    setGrid({ x: move, y: grid.y });
+    if(move >= 1) {
+      setGrid({ x: move, y: grid.y });
+    } else if(move < 1) {
+      setGrid({ x: 1, y: grid.y });
+      setCount(count);
+    }
 
     const one = document.querySelector(".one");
     const two = document.querySelector(".two");
@@ -65,8 +89,14 @@ export default function AppFunctional(props) {
   const rightBtn = () => {
     const increase = count + 1;
     setCount(increase);
+
     const move = grid.x + 1;
-    setGrid({ x: move, y: grid.y });
+    if(move <= 3) {
+      setGrid({ x: move, y: grid.y });
+    } else if(move > 3) {
+      setGrid({ x: 3, y: grid.y });
+      setCount(count);
+    }
 
     const one = document.querySelector(".one");
     const two = document.querySelector(".two");
@@ -114,8 +144,14 @@ export default function AppFunctional(props) {
   const upBtn = () => {
     const increase = count + 1;
     setCount(increase);
+
     const move = grid.y - 1;
-    setGrid({ x: grid.x, y: move });
+    if(move >= 1) {
+      setGrid({ x: grid.x, y: move });
+    } else if(move < 1) {
+      setGrid({ x: grid.x, y: 1 });
+      setCount(count);
+    }
 
     const one = document.querySelector(".one");
     const two = document.querySelector(".two");
@@ -163,8 +199,15 @@ export default function AppFunctional(props) {
   const downBtn = () => {
     const increase = count + 1;
     setCount(increase);
+
     const move = grid.y + 1;
-    setGrid({ x: grid.x, y: move });
+    if(move <= 3) {
+      setGrid({ x: grid.x, y: move });
+    } else if(move > 3) {
+      setGrid({ x: grid.x, y: 3 });
+      setCount(count);
+    }
+    
 
     const one = document.querySelector(".one");
     const two = document.querySelector(".two");
