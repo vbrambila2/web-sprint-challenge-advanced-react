@@ -7,13 +7,16 @@ const initialState = {
   "x": 2,
   "y": 2,
   "steps": 0,
-  "email": "lady@gmail.com"
+  "email": ""
 }
+
+const initialMessage = ""
+
 
 export default function AppFunctional(props) {
   const [grid, setGrid] = useState(initialState)
   //const [count, setCount] = useState(initialCount);
-  const [message, setMessage] = useState("");
+  const [message, setMessage] = useState(initialMessage)
 
   const url = 'http://localhost:9000/api/result'; 
   //const initialCount = 0;
@@ -22,7 +25,7 @@ export default function AppFunctional(props) {
 
   useEffect(() => {
     postInfo(grid);
-  }, [grid]);
+  }, []);
 
   
   const letter = 'B';
@@ -32,8 +35,10 @@ export default function AppFunctional(props) {
     const move = grid.x - 1;
     if(move >= 1) {
       setGrid({ x: move, y: grid.y, steps: increase, email: grid.email });
+      setMessage(initialMessage);
     } else if(move < 1) {
       setGrid({ x: 1, y: grid.y, steps: grid.steps, email: grid.email });
+      setMessage("You can't go left");
     }
 
     const one = document.querySelector(".one");
@@ -84,8 +89,10 @@ export default function AppFunctional(props) {
     const move = grid.x + 1;
     if(move <= 3) {
       setGrid({ x: move, y: grid.y, steps: increase, email: grid.email });
+      setMessage(initialMessage);
     } else if(move > 3) {
       setGrid({ x: 3, y: grid.y, steps: grid.steps, email: grid.email });
+      setMessage("You can't go right");
     }
 
     const one = document.querySelector(".one");
@@ -136,8 +143,10 @@ export default function AppFunctional(props) {
     const move = grid.y - 1;
     if(move >= 1) {
       setGrid({ x: grid.x, y: move, steps: increase, email: grid.email });
+      setMessage(initialMessage);
     } else if(move < 1) {
       setGrid({ x: grid.x, y: 1, steps: grid.steps, email: grid.email });
+      setMessage("You can't go up");
     }
 
     const one = document.querySelector(".one");
@@ -188,8 +197,10 @@ export default function AppFunctional(props) {
     const move = grid.y + 1;
     if(move <= 3) {
       setGrid({ x: grid.x, y: move, steps: increase, email: grid.email });
+      setMessage(initialMessage);
     } else if(move > 3) {
       setGrid({ x: grid.x, y: 3, steps: grid.steps, email: grid.email });
+      setMessage("You can't go down");
     }
     
 
@@ -237,8 +248,8 @@ export default function AppFunctional(props) {
   }
 
   const resetCount = () => {
-    //setCount(initialCount);
     setGrid(initialState);
+    setMessage(initialMessage);
 
     const active = document.querySelector(".active");
     active.classList.remove("active");
@@ -248,13 +259,12 @@ export default function AppFunctional(props) {
     five.innerHTML = letter;
   }
 
-  console.log(grid, "bottom");
+  console.log(grid, "grid");
 
   const postInfo = (grid) => {
     axios.post(url, grid)
       .then(res => {
-        console.log(res.data.message, "res");
-        setGrid(grid);
+        console.log(res.data, "res");
         setMessage(res.data.message);
       })
       .catch(err => console.error(err))
