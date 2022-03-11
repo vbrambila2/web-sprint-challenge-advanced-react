@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 
-const initialCount = 0;
+
 
 const initialState = {
   "x": 2,
@@ -12,35 +12,28 @@ const initialState = {
 
 export default function AppFunctional(props) {
   const [grid, setGrid] = useState(initialState)
-  const [count, setCount] = useState(initialCount);
+  //const [count, setCount] = useState(initialCount);
+  const [message, setMessage] = useState("");
 
   const url = 'http://localhost:9000/api/result'; 
+  //const initialCount = 0;
 
-  const postInfo = () => {
-    axios.post(url, grid)
-      .then(res => {
-        console.log(res, "res");
-      })
-      .catch(err => console.error(err))
-  }
+  
 
   useEffect(() => {
-    postInfo();
-  }, []);
+    postInfo(grid);
+  }, [grid]);
 
   
   const letter = 'B';
 
   const leftBtn = () => {
-    const increase = count + 1;
-    setCount(increase);
-
+    const increase = grid.steps + 1;
     const move = grid.x - 1;
     if(move >= 1) {
-      setGrid({ x: move, y: grid.y });
+      setGrid({ x: move, y: grid.y, steps: increase, email: grid.email });
     } else if(move < 1) {
-      setGrid({ x: 1, y: grid.y });
-      setCount(count);
+      setGrid({ x: 1, y: grid.y, steps: grid.steps, email: grid.email });
     }
 
     const one = document.querySelector(".one");
@@ -87,15 +80,12 @@ export default function AppFunctional(props) {
   }
 
   const rightBtn = () => {
-    const increase = count + 1;
-    setCount(increase);
-
+    const increase = grid.steps + 1;
     const move = grid.x + 1;
     if(move <= 3) {
-      setGrid({ x: move, y: grid.y });
+      setGrid({ x: move, y: grid.y, steps: increase, email: grid.email });
     } else if(move > 3) {
-      setGrid({ x: 3, y: grid.y });
-      setCount(count);
+      setGrid({ x: 3, y: grid.y, steps: grid.steps, email: grid.email });
     }
 
     const one = document.querySelector(".one");
@@ -142,15 +132,12 @@ export default function AppFunctional(props) {
   }
 
   const upBtn = () => {
-    const increase = count + 1;
-    setCount(increase);
-
+    const increase = grid.steps + 1;
     const move = grid.y - 1;
     if(move >= 1) {
-      setGrid({ x: grid.x, y: move });
+      setGrid({ x: grid.x, y: move, steps: increase, email: grid.email });
     } else if(move < 1) {
-      setGrid({ x: grid.x, y: 1 });
-      setCount(count);
+      setGrid({ x: grid.x, y: 1, steps: grid.steps, email: grid.email });
     }
 
     const one = document.querySelector(".one");
@@ -197,15 +184,12 @@ export default function AppFunctional(props) {
   }
 
   const downBtn = () => {
-    const increase = count + 1;
-    setCount(increase);
-
+    const increase = grid.steps + 1;
     const move = grid.y + 1;
     if(move <= 3) {
-      setGrid({ x: grid.x, y: move });
+      setGrid({ x: grid.x, y: move, steps: increase, email: grid.email });
     } else if(move > 3) {
-      setGrid({ x: grid.x, y: 3 });
-      setCount(count);
+      setGrid({ x: grid.x, y: 3, steps: grid.steps, email: grid.email });
     }
     
 
@@ -253,7 +237,7 @@ export default function AppFunctional(props) {
   }
 
   const resetCount = () => {
-    setCount(initialCount);
+    //setCount(initialCount);
     setGrid(initialState);
 
     const active = document.querySelector(".active");
@@ -264,11 +248,23 @@ export default function AppFunctional(props) {
     five.innerHTML = letter;
   }
 
+  console.log(grid, "bottom");
+
+  const postInfo = (grid) => {
+    axios.post(url, grid)
+      .then(res => {
+        console.log(res.data.message, "res");
+        setGrid(grid);
+        setMessage(res.data.message);
+      })
+      .catch(err => console.error(err))
+  }
+
   return (
     <div id="wrapper" className={props.className}>
       <div className="info">
         <h3 id="coordinates">Coordinates ({ grid.x }, { grid.y })</h3>
-        <h3 id="steps">You moved { count } times</h3>
+        <h3 id="steps">You moved { grid.steps } times</h3>
       </div>
       <div id="grid">
         <div className="square one"></div>
@@ -282,7 +278,7 @@ export default function AppFunctional(props) {
         <div className="square nine"></div>
       </div>
       <div className="info">
-        <h3 id="message"></h3>
+        <h3 id="message">{ message }</h3>
       </div>
       <div id="keypad">
         <button onClick={leftBtn} id="left">LEFT</button>
