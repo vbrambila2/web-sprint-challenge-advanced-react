@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 
-
-
 const initialState = {
   "x": 2,
   "y": 2,
@@ -12,33 +10,30 @@ const initialState = {
 
 const initialMessage = ""
 
-
 export default function AppFunctional(props) {
   const [grid, setGrid] = useState(initialState)
-  //const [count, setCount] = useState(initialCount);
   const [message, setMessage] = useState(initialMessage)
 
   const url = 'http://localhost:9000/api/result'; 
-  //const initialCount = 0;
 
-  
+  // useEffect(() => {
+  //   postInfo(grid);
+  // }, [grid]);
 
-  useEffect(() => {
-    postInfo(grid);
-  }, []);
-
-  
   const letter = 'B';
 
   const leftBtn = () => {
     const increase = grid.steps + 1;
     const move = grid.x - 1;
     if(move >= 1) {
-      setGrid({ x: move, y: grid.y, steps: increase, email: grid.email });
+      setGrid({ x: move, y: grid.y, steps: increase, email: grid.email});
       setMessage(initialMessage);
+      
+      console.log(grid, "within");
     } else if(move < 1) {
       setGrid({ x: 1, y: grid.y, steps: grid.steps, email: grid.email });
       setMessage("You can't go left");
+      console.log(grid, "outside");
     }
 
     const one = document.querySelector(".one");
@@ -262,12 +257,38 @@ export default function AppFunctional(props) {
   console.log(grid, "grid");
 
   const postInfo = (grid) => {
-    axios.post(url, grid)
+    axios.post(url, {...grid})
       .then(res => {
-        console.log(res.data, "res");
+        console.log(res, "res in postInfo");
         setMessage(res.data.message);
       })
       .catch(err => console.error(err))
+  }
+
+  const postEmail = (newEmail) => {
+    axios.post(url, newEmail)
+      .then(res => {
+        console.log(res, "email in postEmail");
+        setMessage(res.data.message);
+      })
+      .catch(err => console.error(err))
+  }
+
+  const onSubmit = (e) => {
+    e.preventDefault()
+    const newEmail = {
+      x: grid.x, 
+      y: grid.y, 
+      steps: grid.steps, 
+      email: grid.email
+    }
+    postEmail(newEmail);
+  }
+
+  const onChange = (e) => {
+    e.preventDefault()
+    setGrid({ x: grid.x, y: grid.y, steps: grid.steps, email: e.target.value })
+    console.log(grid, "form");
   }
 
   return (
@@ -297,8 +318,16 @@ export default function AppFunctional(props) {
         <button onClick={downBtn} id="down">DOWN</button>
         <button onClick={resetCount} id="reset">reset</button>
       </div>
-      <form>
-        <input id="email" type="email" placeholder="type email"></input>
+      <form onSubmit={onSubmit}>
+        <input 
+          id="email" 
+          type="email" 
+          placeholder="type email"
+          name="email"
+          value={grid.email}
+          onChange={onChange}
+          >
+        </input>
         <input id="submit" type="submit"></input>
       </form>
     </div>
