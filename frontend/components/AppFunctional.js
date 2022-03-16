@@ -28,12 +28,9 @@ export default function AppFunctional(props) {
     if(move >= 1) {
       setGrid({ x: move, y: grid.y, steps: increase, email: grid.email});
       setMessage(initialMessage);
-      
-      console.log(grid, "within");
     } else if(move < 1) {
       setGrid({ x: 1, y: grid.y, steps: grid.steps, email: grid.email });
       setMessage("You can't go left");
-      console.log(grid, "outside");
     }
 
     const one = document.querySelector(".one");
@@ -254,21 +251,9 @@ export default function AppFunctional(props) {
     five.innerHTML = letter;
   }
 
-  console.log(grid, "grid");
-
-  // const postInfo = (grid) => {
-  //   axios.post(url, {...grid})
-  //     .then(res => {
-  //       console.log(res, "res in postInfo");
-  //       setMessage(res.data.message);
-  //     })
-  //     .catch(err => console.error(err))
-  // }
-
   const postEmail = (newEmail) => {
     axios.post(url, newEmail)
       .then(res => {
-        console.log(res, "postEmail");
         setMessage(res.data.message);
         setGrid({...grid, email: ""});
       })
@@ -278,11 +263,8 @@ export default function AppFunctional(props) {
   const onSubmit = (e) => {
     e.preventDefault();
     var x = document.getElementById("email").value;
-    console.log(x, "x");
     var atpos = x.indexOf("@");
-    console.log(atpos, "@");
     var dotpos = x.lastIndexOf(".");
-    console.log(dotpos, "dot");
     if(grid.email === "foo@bar.baz") {
       setMessage("foo@bar.baz failure #71");
       setGrid({...grid, email: ""});
@@ -331,7 +313,6 @@ export default function AppFunctional(props) {
       <form onSubmit={onSubmit}>
         <input 
           id="email" 
-          //type="email" 
           placeholder="type email"
           name="email"
           value={grid.email}

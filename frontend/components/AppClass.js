@@ -19,7 +19,6 @@ export default class AppClass extends React.Component {
   constructor() {
     super()
     this.state = initialState
-    console.log(this.state.grid, "state");
   }
 
   leftBtn = () => {
@@ -270,7 +269,6 @@ export default class AppClass extends React.Component {
       this.setState({grid: {x: grid.x, y: grid.y, steps: grid.steps, email: ""}, message: "Ouch: email must be a valid email"});
     } else {
       postEmail(grid);
-      console.log(grid, "state for class");
       e.target.value = "";
     }
   }
@@ -314,7 +312,6 @@ export default class AppClass extends React.Component {
         <form onSubmit={this.onSubmit}>
           <input 
             id="email" 
-            //type="email"
             placeholder="type email"
             name="email"
             value={grid.email}
