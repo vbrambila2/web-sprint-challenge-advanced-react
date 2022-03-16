@@ -277,8 +277,6 @@ export default function AppFunctional(props) {
 
   const onSubmit = (e) => {
     e.preventDefault();
-    //const valid = grid.email.includes('@');
-    //var pattern = /^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$/; 
     var x = document.getElementById("email").value;
     console.log(x, "x");
     var atpos = x.indexOf("@");
