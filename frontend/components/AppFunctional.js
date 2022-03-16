@@ -268,34 +268,46 @@ export default function AppFunctional(props) {
   const postEmail = (newEmail) => {
     axios.post(url, newEmail)
       .then(res => {
-        console.log(res, "email in postEmail");
+        console.log(res, "postEmail");
         setMessage(res.data.message);
+        setGrid({...grid, email: ""});
       })
       .catch(err => console.error(err))
   }
 
   const onSubmit = (e) => {
-    e.preventDefault()
-    const newEmail = {
-      x: grid.x, 
-      y: grid.y, 
-      steps: grid.steps, 
-      email: grid.email
+    e.preventDefault();
+    //const valid = grid.email.includes('@');
+    //var pattern = /^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$/; 
+    var x = document.getElementById("email").value;
+    console.log(x, "x");
+    var atpos = x.indexOf("@");
+    console.log(atpos, "@");
+    var dotpos = x.lastIndexOf(".");
+    console.log(dotpos, "dot");
+    if(grid.email === "foo@bar.baz") {
+      setMessage("foo@bar.baz failure #71");
+      setGrid({...grid, email: ""});
+    } else if (grid.email === "") {
+      setMessage("Ouch: email is required");
+    } else if (atpos<1 || dotpos<atpos+2 || dotpos+2>=x.length) {
+      setMessage("Ouch: email must be a valid email");
+    } else {
+      postEmail(grid);
+      e.target.value = "";
     }
-    postEmail(newEmail);
   }
 
   const onChange = (e) => {
     e.preventDefault()
     setGrid({ x: grid.x, y: grid.y, steps: grid.steps, email: e.target.value })
-    console.log(grid, "form");
   }
 
   return (
     <div id="wrapper" className={props.className}>
       <div className="info">
         <h3 id="coordinates">Coordinates ({ grid.x }, { grid.y })</h3>
-        <h3 id="steps">You moved { grid.steps } times</h3>
+        <h3 id="steps">{ grid.steps === 1 ? `You moved ${grid.steps} time` : `You moved ${grid.steps} times` }</h3>
       </div>
       <div id="grid">
         <div className="square one"></div>
@@ -321,7 +333,7 @@ export default function AppFunctional(props) {
       <form onSubmit={onSubmit}>
         <input 
           id="email" 
-          type="email" 
+          //type="email" 
           placeholder="type email"
           name="email"
           value={grid.email}
