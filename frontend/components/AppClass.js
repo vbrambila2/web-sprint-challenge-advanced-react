@@ -27,10 +27,9 @@ export default class AppClass extends React.Component {
     const increase = grid.steps + 1;
     const move = grid.x - 1;
     if(move >= 1) {
-      this.setState({ x: move, y: grid.y, steps: increase, email: grid.email});      
+      this.setState({ grid: { x: move, y: grid.y, steps: increase, email: grid.email }, message: "" });      
     } else if(move < 1) {
-      this.setState({ x: 1, y: grid.y, steps: grid.steps, email: grid.email });
-      //setMessage("You can't go left");
+      this.setState({ grid: { x: 1, y: grid.y, steps: grid.steps, email: grid.email }, message: "You can't go left" });
     }
 
     const one = document.querySelector(".one");
@@ -81,10 +80,9 @@ export default class AppClass extends React.Component {
     const increase = grid.steps + 1;
     const move = grid.x + 1;
     if(move <= 3) {
-      this.setState({ x: move, y: grid.y, steps: increase, email: grid.email });
+      this.setState({ grid: { x: move, y: grid.y, steps: increase, email: grid.email }, message: "" });
     } else if(move > 3) {
-      this.setState({ x: 3, y: grid.y, steps: grid.steps, email: grid.email });
-      //setMessage("You can't go right");
+      this.setState({ grid: { x: 3, y: grid.y, steps: grid.steps, email: grid.email }, message: "You can't go right" });
     }
 
     const one = document.querySelector(".one");
@@ -135,10 +133,9 @@ export default class AppClass extends React.Component {
     const increase = grid.steps + 1;
     const move = grid.y - 1;
     if(move >= 1) {
-      this.setState({ x: grid.x, y: move, steps: increase, email: grid.email });
+      this.setState({ grid: { x: grid.x, y: move, steps: increase, email: grid.email }, message: "" });
     } else if(move < 1) {
-      this.setState({ x: grid.x, y: 1, steps: grid.steps, email: grid.email });
-      //setMessage("You can't go up");
+      this.setState({ grid: { x: grid.x, y: 1, steps: grid.steps, email: grid.email }, message: "You can't go up" });
     }
 
     const one = document.querySelector(".one");
@@ -189,10 +186,9 @@ export default class AppClass extends React.Component {
     const increase = grid.steps + 1;
     const move = grid.y + 1;
     if(move <= 3) {
-      this.setState({ x: grid.x, y: move, steps: increase, email: grid.email });
+      this.setState({ grid: { x: grid.x, y: move, steps: increase, email: grid.email }, message: "" });
     } else if(move > 3) {
-      this.setState({ x: grid.x, y: 3, steps: grid.steps, email: grid.email });
-      //setMessage("You can't go down");
+      this.setState({ grid: { x: grid.x, y: 3, steps: grid.steps, email: grid.email }, message: "You can't go down" });
     }
     
 
@@ -258,8 +254,7 @@ export default class AppClass extends React.Component {
     const postEmail = (newEmail) => {
       axios.post(url, newEmail)
         .then(res => {
-          this.setState({message: res.data.message});
-          //setGrid({...grid, email: ""});
+          this.setState({ grid: { x: grid.x, y: grid.y, steps: grid.steps, email: "" }, message: res.data.message });
         })
         .catch(err => console.error(err))
     }
@@ -268,13 +263,14 @@ export default class AppClass extends React.Component {
     var atpos = x.indexOf("@");
     var dotpos = x.lastIndexOf(".");
     if(grid.email === "foo@bar.baz") {
-      this.setState({message: "foo@bar.baz failure #71"});
+      this.setState({grid: {x: grid.x, y: grid.y, steps: grid.steps, email: ""}, message: "foo@bar.baz failure #71"});
     } else if (grid.email === "") {
-      this.setState({message: "Ouch: email is required"});
+      this.setState({grid: {x: grid.x, y: grid.y, steps: grid.steps, email: ""}, message: "Ouch: email is required"});
     } else if (atpos<1 || dotpos<atpos+2 || dotpos+2>=x.length) {
-      this.setState({message: "Ouch: email must be a valid email"});
+      this.setState({grid: {x: grid.x, y: grid.y, steps: grid.steps, email: ""}, message: "Ouch: email must be a valid email"});
     } else {
       postEmail(grid);
+      console.log(grid, "state for class");
       e.target.value = "";
     }
   }
@@ -282,7 +278,7 @@ export default class AppClass extends React.Component {
   onChange = (e) => {
     e.preventDefault();
     const { grid } = this.state;
-    this.setState({ x: grid.x, y: grid.y, steps: grid.steps, email: e.target.value });
+    this.setState({ grid: { x: grid.x, y: grid.y, steps: grid.steps, email: e.target.value } });
   }
 
   render() {
@@ -299,7 +295,7 @@ export default class AppClass extends React.Component {
           <div className="square two"></div>
           <div className="square three"></div>
           <div className="square four"></div>
-          <div className="square five active">B</div>
+          <div className="square five active">{ letter }</div>
           <div className="square six"></div>
           <div className="square seven"></div>
           <div className="square eight"></div>

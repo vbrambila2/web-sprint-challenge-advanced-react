@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
 
 const initialState = {
@@ -256,14 +256,14 @@ export default function AppFunctional(props) {
 
   console.log(grid, "grid");
 
-  const postInfo = (grid) => {
-    axios.post(url, {...grid})
-      .then(res => {
-        console.log(res, "res in postInfo");
-        setMessage(res.data.message);
-      })
-      .catch(err => console.error(err))
-  }
+  // const postInfo = (grid) => {
+  //   axios.post(url, {...grid})
+  //     .then(res => {
+  //       console.log(res, "res in postInfo");
+  //       setMessage(res.data.message);
+  //     })
+  //     .catch(err => console.error(err))
+  // }
 
   const postEmail = (newEmail) => {
     axios.post(url, newEmail)
